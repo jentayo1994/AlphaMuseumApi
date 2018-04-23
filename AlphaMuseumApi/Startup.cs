@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AlphaMuseumApi.DbContext;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -15,6 +16,8 @@ namespace AlphaMuseumApi
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<MongoDbOptions>(o => o.ConnectionString = "mongodb://localhost:27017");
+            services.AddSingleton<MongoDbContext>();
             services.AddIdentityServer()
                 .AddJwtBearerClientAuthentication()
                 .AddConfigurationStore(o =>
@@ -22,6 +25,12 @@ namespace AlphaMuseumApi
                     o.ConnectionString = "mongodb://localhost:27017";
                     o.Database = "Auth";
                 });
+            services.AddSpaStaticFiles(configuration =>
+            {
+                configuration.RootPath = "ClientApp/dist";
+            });
+            services.AddMvc();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -32,6 +41,15 @@ namespace AlphaMuseumApi
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseStaticFiles();
+            app.UseSpaStaticFiles();
+            app.UseAuthentication();
+            app.UseIdentityServer();
+            app.UseMvc();
+            app.UseSpa(builder =>
+            {
+                builder.UseProxyToSpaDevelopmentServer("http://localhost:4200");
+            });
 
         }
     }
