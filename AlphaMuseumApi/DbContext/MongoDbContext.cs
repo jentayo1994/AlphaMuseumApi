@@ -15,6 +15,6 @@ namespace AlphaMuseumApi.DbContext
         public IMongoCollection<Action> Actions => _database.GetCollection<Action>("Action");
         public IMongoCollection<Article> Articles => _database.GetCollection<Article>("Article");
         public IMongoCollection<Event> Events => _database.GetCollection<Event>("Event");
-        public IMongoCollection<HistoryEvent> HistoryEvent => _database.GetCollection<HistoryEvent>("HEvent");
+        public IMongoCollection<HistoryEvent> HistoryEvents => _database.GetCollection<HistoryEvent>("HEvent");
     }
 }
